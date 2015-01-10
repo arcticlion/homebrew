@@ -86,7 +86,7 @@ def check_path_for_trailing_slashes
 end
 
 # Installing MacGPG2 interferes with Homebrew in a big way
-# http://sourceforge.net/projects/macgpg2/files/
+# https://github.com/GPGTools/MacGPG2
 def check_for_macgpg2
   return if File.exist? '/usr/local/MacGPG2/share/gnupg/VERSION'
 
@@ -458,6 +458,19 @@ def check_access_logs
       Homebrew writes debugging logs to this location.
 
       You should probably `chown` #{HOMEBREW_LOGS}
+    EOS
+  end
+end
+
+def check_access_cache
+  if HOMEBREW_CACHE.exist? && !HOMEBREW_CACHE.writable_real?
+    <<-EOS.undent
+      #{HOMEBREW_CACHE} isn't writable.
+      This can happen if you ran `brew install` or `brew fetch` as another user.
+
+      Homebrew caches downloaded files to this location.
+
+      You should probably `chown` #{HOMEBREW_CACHE}
     EOS
   end
 end
@@ -1068,8 +1081,8 @@ def check_for_pydistutils_cfg_in_home
   if File.exist? "#{ENV['HOME']}/.pydistutils.cfg" then <<-EOS.undent
     A .pydistutils.cfg file was found in $HOME, which may cause Python
     builds to fail. See:
-      http://bugs.python.org/issue6138
-      http://bugs.python.org/issue4655
+      https://bugs.python.org/issue6138
+      https://bugs.python.org/issue4655
     EOS
   end
 end
